@@ -311,15 +311,7 @@
 
     //collisioni
 
-    //dinosauro1
-    var dino1;
-    //dinosauro2
-    var dino2;
-    //dinosauro3
-    var dino3;
-    //dinosauro4
-    var dino4;
-
+   var dini = new Array(NUM_DINI);
     //cactus
     var cactus = new Array(NUM_DINI);
     for(var i = 0; i< cactus.length; i++){
@@ -399,7 +391,7 @@
         
         //dinosauri
         //dino4
-        dino4 = this.physics.add.sprite(160, 388, 'dinoSprite').setOrigin(0, 0);
+        dino4 = this.physics.add.sprite(200, 388, 'dinoSprite').setOrigin(0, 0);
         dino4.setTintFill(realNumberDino4, realNumberDino4, realNumberDino4, realNumberDino4);
 
         //collisioni del dino con i bordi
