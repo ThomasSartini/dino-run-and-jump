@@ -388,52 +388,20 @@
             });
         });
 
-        dino4 = null;
-        dino3 = null;
-        //dinosauri
-        //dino4
-        var dino4 = this.physics.add.sprite(160, 388, 'dinoSprite').setOrigin(0, 0);
-        dino4.setTintFill(realNumberDino4, realNumberDino4, realNumberDino4, realNumberDino4);
-
-        //collisioni del dino con i bordi
-        dino4.setCollideWorldBounds(true);
-
-        //collider tra dino e line per non farlo cadere
-        lineCollide4 = new Phaser.Geom.Line(0, 410, 700, 410)
-        dino4.body.setBoundsRectangle(lineCollide4);
-
-        //dino3
-        var dino3 = this.physics.add.sprite(140, 398, 'dinoSprite').setOrigin(0, 0);
-        dino3.setTintFill(realNumberDino3, realNumberDino3, realNumberDino3, realNumberDino3);
-
-        //collisioni del dino con i bordi
-        dino3.setCollideWorldBounds(true);
-
-        //collider tra dino e line per non farlo cadere
-        lineCollide3 = new Phaser.Geom.Line(0, 430, 700, 430)
-        dino3.body.setBoundsRectangle(lineCollide3);
-
-        //dino2
-        dino2 = this.physics.add.sprite(120, 408, 'dinoSprite').setOrigin(0, 0);
-        dino2.setTintFill(realNumberDino2, realNumberDino2, realNumberDino2, realNumberDino2);
-
-        //collisioni del dino con i bordi
-        dino2.setCollideWorldBounds(true);
-
-        //collider tra dino e line per non farlo cadere
-        lineCollide2 = new Phaser.Geom.Line(0, 450, 700, 450)
-        dino2.body.setBoundsRectangle(lineCollide2);
-
-        //dino1
-        dino1 = this.physics.add.sprite(100, 418, 'dinoSprite').setOrigin(0, 0);
-        dino1.setTintFill(realNumberDino1, realNumberDino1, realNumberDino1, realNumberDino1);
-        //collisioni del dino con i bordi
-        dino1.setCollideWorldBounds(true);
-
-        //collider tra dino e line per non farlo cadere
-        lineCollide = new Phaser.Geom.Line(0, 470, 700, 470)
-        dino1.body.setBoundsRectangle(lineCollide);
-
+        counter = 160;
+        counter2 = 388;
+        var counter3 = 410;
+        dini.forEach(dino => {
+            dino = this.physics.add.sprite(counter, counter2, 'dinoSprite').setOrigin(0, 0);
+            dino.setTintFill(realNumberDino4, realNumberDino4, realNumberDino4, realNumberDino4);
+            dino.setCollideWorldBounds(true); //collisioni del dino con i bordi
+            var lineCollide = new Phaser.Geom.Line(0, counter3, 700, counter3); //collider tra dino e line per non farlo cadere
+            dino.body.setBoundsRectangle(lineCollide);
+            counter -= 20;
+            counter2 += 10;
+            counter3 += 20;
+        });
+ 
         //animazione di corsa
         this.anims.create({
             key: 'run',
@@ -467,20 +435,17 @@
             repeat: -1
         });
 
-        //dinosauri iniziano correndo
-        dino1.play("run");
-        dino2.play("run");
-        dino3.play("run");
-        dino4.play("run");
+        dini.forEach(dino => {
+            dino.play("run");
+        });
 
 
 
         //collider cactus dino
-        for (var i = 0; i < 5; i++) {
-            this.physics.add.overlap(dino1, cactusDino1[i], collideCactus1, null, this);
-            this.physics.add.overlap(dino2, cactusDino2[i], collideCactus2, null, this);
-            this.physics.add.overlap(dino3, cactusDino3[i], collideCactus3, null, this);
-            this.physics.add.overlap(dino4, cactusDino4[i], collideCactus4, null, this);
+        for (var i = 0; i < dini; i++) {
+            for (var j = 0; j < cactus[i]; j++) {
+                this.physics.add.overlap(dino[i], cactus[i][j], collideCactus(i), null, this);
+            }
         }
 
         //input tasti 
@@ -506,57 +471,35 @@
 
             }
         }
-        /**
-        for (var i = 1; i < 5; i++) {
-           
-            cactusDino1[i].x = cactusDino1[i - 1].x + distanzaMinima + distanza
-            cactusDino2[i].x = cactusDino1[i].x + 20;
-            cactusDino3[i].x = cactusDino2[i].x + 20;
-            cactusDino4[i].x = cactusDino3[i].x + 20;
-        }*/
     }
 
     //evitare doppio salto
-    var touchFloor = [4];
-    for (var i = 0; i <= 3; i++) {
+    var touchFloor = new Array(4);
+    for (var i = 0; i < touchFloor.length; i++) {
         touchFloor[i] = true;
     }
 
     //variabili di supporto per velocità e assegnazione punteggio
     //velocità sfondo
     var velocitaSfondo = 5;
-
-    //punteggioDino1
-    var punteggioDino1 = 0;
-    var pAssegnatiDino1 = [5];
-    for (var i = 0; i < 5; i++) {
-        pAssegnatiDino1[i] = false;
+    var punteggio = new Array(NUM_DINI);
+    punteggio.forEach(p => {
+        p = 0;
+    });
+    var pAssegnati = new Array(NUM_DINI);
+    for(var i = 0; i< pAssegnati.length; i++){
+        pAssegnati[i] = new Array(5);
     }
-
-    //punteggioDino2
-    var punteggioDino2 = 0;
-    var pAssegnatiDino2 = [5];
-    for (var i = 0; i < 5; i++) {
-        pAssegnatiDino2[i] = false;
-    }
-
-    //punteggioDino3
-    var punteggioDino3 = 0;
-    var pAssegnatiDino3 = [5];
-    for (var i = 0; i < 5; i++) {
-        pAssegnatiDino3[i] = false;
-    }
-
-    //punteggioDino2
-    var punteggioDino4 = 0;
-    var pAssegnatiDino4 = [5];
-    for (var i = 0; i < 5; i++) {
-        pAssegnatiDino4[i] = false;
+    
+    for(var i = 0; i<pAssegnati.length; i++){
+        for(var j = 0; j<pAssegnati[i].length; j++){
+            pAssegnati[i][j] = false;
+        }
     }
 
     //var supporto per cambio difficoltà
-    var supVelocita = [5];
-    for (var i = 0; i < 5; i++) {
+    var supVelocita = new Array(5);
+    for (var i = 0; i < supVelocita.length; i++) {
         supVelocita[i] = true;
     }
 
@@ -567,12 +510,12 @@
     //funzione updateGame, viene richiamata 60 volte al secondo, utilizzata per i movimenti nel animazione
     function updateGame() {
         //terreni si spostano
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < terreni.length; i++) {
             terreni[i].x -= velocitaSfondo;
         }
 
         //se escono completamente dal canvas vengono ridisegnati infondo
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < terreni.length; i++) {
             if (terreni[i].x < -2000) {
                 terreni[i].x = 1100;
             }
@@ -580,25 +523,24 @@
 
 
         //montagne si spostano
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < montagne.length; i++) {
             montagne[i].x -= 1;
         }
 
 
         //se escono completamente dal canvas vengono ridisegnati infondo
-        for (var i = 0; i < 2; i++) {
+        for (var i = 0; i < montagne.length; i++) {
             if (montagne[i].x < -2000) {
                 montagne[i].x = 2000;
             }
         }
 
         //cactus si spostano
-        for (var i = 0; i < 5; i++) {
-            cactusDino1[i].x -= velocitaSfondo;
-            cactusDino2[i].x -= velocitaSfondo;
-            cactusDino3[i].x -= velocitaSfondo;
-            cactusDino4[i].x -= velocitaSfondo;
-        }
+        cactus.forEach(cac => {
+            cac.forEach(c => {
+                c.x -= velocitaSfondo;
+            });
+        });
 
         //cacactus1Dino1 riposizionamento
         for (var i = 0; i < 5; i++) {
@@ -780,29 +722,12 @@
 
 
     //collisione tra dinosauri e cactus
-    function collideCactus1() {
-        dino1.setVelocityX(-150);
-        dino1.play("death");
+    function collideCactus(num) {
+        dini[num].setVelocityX(-150);
+        dini[num].play("death");
 
     }
 
-    function collideCactus2() {
-        dino2.setVelocityX(-150);
-        dino2.play("death");
-
-    }
-
-    function collideCactus3() {
-        dino3.setVelocityX(-150);
-        dino3.play("death");
-
-    }
-
-    function collideCactus4() {
-        dino4.setVelocityX(-150);
-        dino4.play("death");
-
-    }
 
     function endOfTheGame(game) {
         game.input.stopPropagation();
