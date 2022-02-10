@@ -501,7 +501,7 @@
         var distanza = Math.floor(Math.random() * 200) + 70;
         for(var i = 0; i< cactus.length; i++){
             for(var j = 1; j< cactus[i].length; j++){
-                
+                console.log(i+","+j)
                 if(i == 0){
                     cactus[i][j].x = cactus[i][j-1].x + distanzaMinima + distanza;
                 }else{
