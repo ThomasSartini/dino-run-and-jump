@@ -290,16 +290,23 @@
         graphics.strokeLineShape(line2);
     }
 
+
+    /*------------------------------------------------------------------------------------------------------------------------------------*/
+
     //Scena game
     //creazione variabili
     //Sfondo
     //terreni
-    var terreni = [2];
 
-    //montagne   
-    var montagne = [2];
+    const NUM_DINI = 4;
+    const NUM_TERRENI = 2;
+    const NUM_MONTAGNE = 2;
+    const NUM_CACTUS = 5;
 
-    //nuvola
+    var terreni = new Array(NUM_TERRENI);
+
+    var montagne = new Array(NUM_MONTAGNE);
+
     var nuvola;
 
     //collisioni
@@ -314,10 +321,10 @@
     var dino4;
 
     //cactus
-    var cactusDino1 = [5];
-    var cactusDino2 = [5];
-    var cactusDino3 = [5];
-    var cactusDino4 = [5];
+    var cactus = new Array(NUM_MONTAGNE);
+    cactus.forEach(c => {
+        c = new Array(NUM_CACTUS);
+    });
 
 
     //input
@@ -338,70 +345,47 @@
         });
     }
 
+
+    
+   
+
     //funzione createGame, crea nel canvas tutti i vari assets caricati nella funzione preload game
     function createGame() {
         //sfondo
         //terreni posizionati
-        terreni[0] = this.physics.add.image(0, 350, 'terreno').setOrigin(0, 0);
-        terreni[1] = this.physics.add.image(2000, 350, 'terreno').setOrigin(0, 0);
 
-        //terreni fissi
-        for (var i = 0; i < 2; i++) {
-            terreni[i].setImmovable(true);
-        }
+        var counter = 0;
+        terreni.forEach(terreno => {
+            terreno = this.physics.add.image(counter, 350, 'terreno').setOrigin(0, 0);
+            terreno.setImmovable(true); //fissa i terreni
+            terreno.body.allowGravity = false; // toglie la gravità
+            counter += 2000;
+        });
+        
+        counter = 0;
+        montagne.forEach(montagna => {
+            montagna = this.physics.add.image(counter, 275, 'montagne').setOrigin(0, 0);
+            montagna.setImmovable(true); //fissa le montagne
+            montagna.body.allowGravity = false; // toglie la gravità
+            counter += 2000;
+        });
 
-
-        //terreni senza gravita
-        for (var i = 0; i < 2; i++) {
-            terreni[i].body.allowGravity = false;
-        }
-
-        //montagne
-        montagne[0] = this.physics.add.image(0, 275, 'montagne').setOrigin(0, 0);
-        montagne[1] = this.physics.add.image(2000, 275, 'montagne').setOrigin(0, 0);
-
-        //montagne fisse
-        for (var i = 0; i < 2; i++) {
-            montagne[i].setImmovable(true);
-        }
-
-
-        //montagne senza gravita
-        for (var i = 0; i < 2; i++) {
-            montagne[i].body.allowGravity = false;
-        }
-
-
-        //nuvola
         nuvola = this.add.image(1200, 255, 'nuvola').setOrigin(0, 0);
 
-        //cactus
-        for (var i = 0; i < 5; i++) {
-            cactusDino1[i] = this.physics.add.image(700, 428, 'cactus').setOrigin(0, 0);
-            cactusDino2[i] = this.physics.add.image(720, 408, 'cactus').setOrigin(0, 0);
-            cactusDino3[i] = this.physics.add.image(740, 388, 'cactus').setOrigin(0, 0);
-            cactusDino4[i] = this.physics.add.image(760, 368, 'cactus').setOrigin(0, 0);
-
-        }
+        counter = 700;
+        var counter2 = 428;
+        cactus.forEach(c => {
+            cac.forEach(c => {
+                c = this.physics.add.image(counter, counter2, 'cactus').setOrigin(0, 0);
+                c.setImmovable(true);
+                c.body.allowGravity = false;
+                counter +=20;
+                counter2 -= 20;
+            });
+        });
 
         cactusPosition();
-
-        //cactus fissi
-        for (var i = 0; i < 5; i++) {
-            cactusDino1[i].setImmovable(true);
-            cactusDino2[i].setImmovable(true);
-            cactusDino3[i].setImmovable(true);
-            cactusDino4[i].setImmovable(true);
-        }
-
-        //cactus senza gravita
-        for (var i = 0; i < 5; i++) {
-            cactusDino1[i].body.allowGravity = false;
-            cactusDino2[i].body.allowGravity = false;
-            cactusDino3[i].body.allowGravity = false;
-            cactusDino4[i].body.allowGravity = false;
-        }
-
+        
         //dinosauri
         //dino4
         dino4 = this.physics.add.sprite(160, 388, 'dinoSprite').setOrigin(0, 0);
@@ -504,13 +488,27 @@
 
     //funzione per le posizioni dei cactus inizio gioco
     function cactusPosition() {
+        var distanza = Math.floor(Math.random() * 200) + 70;
+        for(var i = 0; i< cactus.length; i++){
+            for(var j = 1; j< cactus[i].length; j++){
+                
+                if(i == 0){
+                    cactus[i][j].x = cactus[i][j-1].x + distanzaMinima + distanza;
+                }else{
+                    cactus[i][j].x = cactus[i-1][j].x + 20;
+                }
+                
+
+            }
+        }
+        /**
         for (var i = 1; i < 5; i++) {
-            var distanza = Math.floor(Math.random() * 200) + 70;
+           
             cactusDino1[i].x = cactusDino1[i - 1].x + distanzaMinima + distanza
             cactusDino2[i].x = cactusDino1[i].x + 20;
             cactusDino3[i].x = cactusDino2[i].x + 20;
             cactusDino4[i].x = cactusDino3[i].x + 20;
-        }
+        }*/
     }
 
     //evitare doppio salto
