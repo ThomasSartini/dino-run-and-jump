@@ -379,14 +379,14 @@
 
         counter = 700;
         var counter2 = 428;
-        for(var i = 0; i<0; i++){
-            for(var j = 0; j<0; j++){
+        for(var i = 0; i<cactus.length; i++){
+            for(var j = 0; j<cactus[i].length; j++){
                 cactus[i][j] = this.physics.add.image(counter, counter2, 'cactus').setOrigin(0, 0);
             }
             counter +=20;
             counter2 -= 20;
         }
-        console.log(cactus)
+        
         cactusPosition();
 
         cactus.forEach(cac => {
