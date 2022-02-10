@@ -379,18 +379,23 @@
 
         counter = 700;
         var counter2 = 428;
+        for(var i = 0; i<0; i++){
+            for(var j; j<0; j++){
+                cactus[i][j] = this.physics.add.image(counter, counter2, 'cactus').setOrigin(0, 0);
+            }
+            counter +=20;
+            counter2 -= 20;
+        }
+        cactusPosition();
+
         cactus.forEach(cac => {
             cac.forEach(c => {
-                c = this.physics.add.image(counter, counter2, 'cactus').setOrigin(0, 0);
                 c.setImmovable(true);
                 c.body.allowGravity = false;
-                counter +=20;
-                counter2 -= 20;
             });
         });
 
-        cactusPosition();
-
+        
         //dinosauri
         //dino4
         dino4 = this.physics.add.sprite(160, 388, 'dinoSprite').setOrigin(0, 0);
