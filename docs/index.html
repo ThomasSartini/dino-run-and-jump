@@ -352,20 +352,21 @@
         //terreni posizionati
 
         var counter = 0;
-        terreni.forEach(terreno => {
-            terreno = this.physics.add.image(counter, 350, 'terreno').setOrigin(0, 0);
-            terreno.setImmovable(true); //fissa i terreni
-            terreno.body.allowGravity = false; // toglie la gravità
+        for(var i = 0; i< terreni.length; i++){
+            terreni[i] = this.physics.add.image(counter, 350, 'terreno').setOrigin(0, 0);
+            terreni[i].setImmovable(true); //fissa i terreni
+            terreni[i].body.allowGravity = false; // toglie la gravità
             counter += 2000;
-        });
+        }
+            
         
         counter = 0;
-        montagne.forEach(montagna => {
-            montagna = this.physics.add.image(counter, 275, 'montagne').setOrigin(0, 0);
-            montagna.setImmovable(true); //fissa le montagne
-            montagna.body.allowGravity = false; // toglie la gravità
+        for(var i = 0; i<montagne.length; i++)
+            montagne[i] = this.physics.add.image(counter, 275, 'montagne').setOrigin(0, 0);
+            montagne[i].setImmovable(true); //fissa le montagne
+            montagne[i].body.allowGravity = false; // toglie la gravità
             counter += 2000;
-        });
+        }
 
         nuvola = this.add.image(1200, 255, 'nuvola').setOrigin(0, 0);
 
@@ -381,13 +382,13 @@
         
         cactusPosition();
 
-        cactus.forEach(cac => {
-            cac.forEach(c => {
-                c.setImmovable(true);
-                c.body.allowGravity = false;
-            });
-        });
-
+        for(var i = 0; i<cactus.length; i++){
+            for(var j = 0; j<cactus[i]; j++){
+                cactus[i][j].setImmovable(true);
+                cactus[i][j].body.allowGravity = false;
+            }
+        }
+       
         counter = 160;
         counter2 = 388;
         var counter3 = 410;
@@ -401,9 +402,6 @@
             counter2 += 10;
             counter3 += 20;
         }
-        dini.forEach(dino => {
-            
-        });
  
         //animazione di corsa
         this.anims.create({
@@ -438,9 +436,9 @@
             repeat: -1
         });
 
-        dini.forEach(dino => {
-            dino.play("run");
-        });
+        for(var i = 0; i<dini.length; i++){
+            dini[i].play("run");
+        }
 
 
 
@@ -483,9 +481,9 @@
     //velocità sfondo
     var velocitaSfondo = 5;
     var punteggio = new Array(NUM_DINI);
-    punteggio.forEach(p => {
-        p = 0;
-    });
+    for(var i = 0; i<punteggio; i++){
+        punteggio[i] = 0;
+    }
     var pAssegnati = new Array(NUM_DINI);
     for(var i = 0; i< pAssegnati.length; i++){
         pAssegnati[i] = new Array(5);
@@ -536,56 +534,14 @@
         }
 
         //cactus si spostano
-        cactus.forEach(cac => {
-            cac.forEach(c => {
-                c.x -= velocitaSfondo;
-            });
-        });
+
+        for(var i = 0; i<cactus.length; i++){
+            for(var j = 0; j<cactus[i].length; j++){
+                cactus[i][j].x -= velocitaSfondo;
+            }
+        }
 
         //cacactus1Dino1 riposizionamento
-        /**
-        for (var i = 0; i < 5; i++) {
-            if (i == 0 && cactusDino1[0].x < -26) {
-                cactusDino1[0].x = cactusDino1[4].x + distanzaMinima + Math.floor(Math.random() * 200) + 70;
-                pAssegnatiDino1[i] = false;
-            } else {
-                if (cactusDino1[i].x < -26) {
-                    cactusDino1[i].x = cactusDino1[i - 1].x + distanzaMinima + Math.floor(Math.random() * 200) + 70;
-                    pAssegnatiDino1[i] = false;
-                }
-            }
-
-            if (i == 0 && cactusDino2[0].x < -26) {
-                cactusDino2[0].x = cactusDino1[0].x + 20;
-                pAssegnatiDino2[i] = false;
-            } else {
-                if (cactusDino2[i].x < -26) {
-                    cactusDino2[i].x = cactusDino1[i].x + 20;
-                    pAssegnatiDino2[i] = false;
-                }
-            }
-
-            if (i == 0 && cactusDino2[0].x < -26) {
-                cactusDino3[0].x = cactusDino2[0].x + 20;
-                pAssegnatiDino3[i] = false;
-            } else {
-                if (cactusDino3[i].x < -26) {
-                    cactusDino3[i].x = cactusDino2[i].x + 20;
-                    pAssegnatiDino3[i] = false;
-                }
-            }
-
-            if (i == 0 && cactusDino4[0].x < -26) {
-                cactusDino4[0].x = cactusDino3[0].x + 20;
-                pAssegnatiDino4[i] = false;
-            } else {
-                if (cactusDino4[i].x < -26) {
-                    cactusDino4[i].x = cactusDino3[i].x + 20;
-                    pAssegnatiDino4[i] = false;
-                }
-            }
-        }*/
-
 
         for(var i = 0; i<cactus.length; i++){
             for(var j = 0; j<cactus[i].length; j++){
