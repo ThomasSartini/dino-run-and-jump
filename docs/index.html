@@ -391,7 +391,7 @@
             dini[i] = this.physics.add.sprite(counter, counter2, 'dinoSprite').setOrigin(0, 0);
             dini[i].setTintFill(realNumberDino4, realNumberDino4, realNumberDino4, realNumberDino4);
             dini[i].setCollideWorldBounds(true); //collisioni del dino con i bordi
-            lineCollide[i] = new Phaser.Geom.Line(0, counter3, 700, counter3); //collider tra dino e line per non farlo cadere
+            lineCollide[i] = new Phaser.Geom.Line(0, counter3,  window.innerWidth, counter3); //collider tra dino e line per non farlo cadere
             dini[i].body.setBoundsRectangle(lineCollide[i]);
             counter -= 20;
             counter2 += 10;
