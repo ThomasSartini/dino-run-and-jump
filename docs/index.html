@@ -350,9 +350,6 @@
     function createGame() {
         //sfondo
         //terreni posizionati
-        console.log(cactus.length);
-        console.log(Array.isArray(cactus));
-        console.log(Array.isArray(cactus[0]));
 
         var counter = 0;
         terreni.forEach(terreno => {
@@ -513,7 +510,8 @@
     function updateGame() {
         //terreni si spostano
         for (var i = 0; i < terreni.length; i++) {
-            terreni[i].x -= velocitaSfondo;
+            console.log(terreni[i]);
+            //terreni[i].x -= velocitaSfondo;
         }
 
         //se escono completamente dal canvas vengono ridisegnati infondo
