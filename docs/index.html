@@ -361,7 +361,7 @@
             
         
         counter = 0;
-        for(var i = 0; i<montagne.length; i++)
+        for(var i = 0; i<montagne.length; i++){
             montagne[i] = this.physics.add.image(counter, 275, 'montagne').setOrigin(0, 0);
             montagne[i].setImmovable(true); //fissa le montagne
             montagne[i].body.allowGravity = false; // toglie la gravità
