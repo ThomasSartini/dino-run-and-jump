@@ -502,8 +502,7 @@
     function updateGame() {
         //terreni si spostano
         for (var i = 0; i < terreni.length; i++) {
-            console.log(terreni[i]);
-            //terreni[i].x -= velocitaSfondo;
+            terreni[i].x -= velocitaSfondo;
         }
 
         //se escono completamente dal canvas vengono ridisegnati infondo
