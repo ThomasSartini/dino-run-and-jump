@@ -443,8 +443,8 @@
 
 
         //collider cactus dino
-        for (var i = 0; i < dini; i++) {
-            for (var j = 0; j < cactus[i]; j++) {
+        for (var i = 0; i < dini.length; i++) {
+            for (var j = 0; j < cactus[i].length; j++) {
                 this.physics.add.overlap(dini[i], cactus[i][j], collideCactus(i), null, this);
             }
         }
@@ -481,7 +481,7 @@
     //velocità sfondo
     var velocitaSfondo = 5;
     var punteggio = new Array(NUM_DINI);
-    for(var i = 0; i<punteggio; i++){
+    for(var i = 0; i<punteggio.length; i++){
         punteggio[i] = 0;
     }
     var pAssegnati = new Array(NUM_DINI);
@@ -607,7 +607,7 @@
         var count = 4;
         for(var i = 0; i<5 ; i++){ 
             var check = false;
-            for(var j = 0; j<dini.length; i++){
+            for(var j = 0; j<dini.length; j++){
                 if(!check){
                     check = check || (punteggio[j] > count && supVelocita[i]);
                 }else{
