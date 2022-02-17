@@ -650,35 +650,30 @@
         
 
         //difficolta
-        if (punteggioDino1 > 4 && supVelocita[0] || punteggioDino2 > 4 && supVelocita[0] || punteggioDino3 > 4 && supVelocita[0] || punteggioDino4 > 4 && supVelocita[0]) {
-            velocitaSfondo += 1;
-            supVelocita[0] = false;
-            distanzaMinima += 30;
+        var count = 4;
+        for(var i = 0; i<5 ; i++){ 
+            var check = false;
+            for(var j = 0; j<dini.length; i++){
+                if(!check){
+                    check = check || (punteggio[j] > count && supVelocita[i]);
+                }else{
+                    break;
+                }
+            }
+            if(check){
+                velocitaSfondo += 1;
+                supVelocita[i] = false;
+                distanzaMinima += 30; // 0 -> 30 / 1 -> 30 / 2 -> 20 / 3 -> 0 / 4 -> 0 
+            }
+            check++;
+
+        }
+        var check = true;
+        for(var i = 0; i< dini.length; i++){
+            check = check && dini[i].x < -50;
         }
 
-        if (punteggioDino1 > 9 && supVelocita[1] || punteggioDino2 > 9 && supVelocita[1] || punteggioDino3 > 9 && supVelocita[1] || punteggioDino4 > 9 && supVelocita[1]) {
-            velocitaSfondo += 1;
-            supVelocita[1] = false;
-            distanzaMinima += 30;
-        }
-
-        if (punteggioDino1 > 14 && supVelocita[2] || punteggioDino2 > 14 && supVelocita[2] || punteggioDino3 > 14 && supVelocita[2] || punteggioDino4 > 14 && supVelocita[2]) {
-            velocitaSfondo += 1;
-            supVelocita[2] = false;
-            distanzaMinima += 20;
-        }
-
-        if (punteggioDino1 > 19 && supVelocita[3] || punteggioDino2 > 19 && supVelocita[3] || punteggioDino3 > 19 && supVelocita[3] || punteggioDino4 > 19 && supVelocita[3]) {
-            velocitaSfondo += 1;
-            supVelocita[3] = false;
-        }
-
-        if (punteggioDino1 > 30 && supVelocita[4] || punteggioDino2 > 30 && supVelocita[4] || punteggioDino3 > 30 && supVelocita[4] || punteggioDino4 > 30 && supVelocita[4]) {
-            velocitaSfondo += 1;
-            supVelocita[4] = false;
-        }
-
-        if (dino4.x < -50 && dino3.x < -50 && dino2.x < -50 && dino1.x < -50) {
+        if (check) {
             endOfTheGame(this);
         }
 
