@@ -32,7 +32,7 @@
 <!--<script src="/html/form2.html" id="login"></script>-->
 
 <script type="text/javascript">
-    var host = "/dino-run-and-jump/";
+    var host = ""//"/dino-run-and-jump/";
     //scena lobby
     var sceneLobby = {
         key: 'sceneLobby',
@@ -261,11 +261,11 @@
     }
 
     function startGame(game) {
-        checkname();
-        if (nameDino1 != null && nameDino2 != null && nameDino3 != null && nameDino4 != null && realNumberDino1 != null && realNumberDino2 != null && realNumberDino3 != null && realNumberDino4 != null) {
+        //checkname();
+        //if (nameDino1 != null && nameDino2 != null && nameDino3 != null && nameDino4 != null && realNumberDino1 != null && realNumberDino2 != null && realNumberDino3 != null && realNumberDino4 != null) {
             game.input.stopPropagation();
             game.scene.switch('sceneGame');
-        }
+        //}
 
     }
 
@@ -366,10 +366,11 @@
         nuvola = this.add.image(1200, 255, 'nuvola').setOrigin(0, 0);
 
         counter = 700;
-        var counter2 = 428;
+        var counter2 = 390;
         for(var i = 0; i<cactus.length; i++){
             for(var j = 0; j<cactus[i].length; j++){
                 cactus[i][j] = this.physics.add.image(counter, counter2, 'cactus').setOrigin(0, 0);
+                console.log("cactus: " + cactus[i][j].y);
             }
             counter +=20;
             counter2 -= 20;
@@ -387,12 +388,15 @@
         counter = 240;
         counter2 = 388;
         var counter3 = 410;
+        graphics = this.add.graphics({ lineStyle: { width: 4, color: 0xaa00aa } });
         for(var i = 0; i< dini.length; i++){
             dini[i] = this.physics.add.sprite(counter, counter2, 'dinoSprite').setOrigin(0, 0);
             dini[i].setTintFill(realNumberDino4, realNumberDino4, realNumberDino4, realNumberDino4);
             dini[i].setCollideWorldBounds(true); //collisioni del dino con i bordi
             lineCollide[i] = new Phaser.Geom.Line(0, counter3,  window.innerWidth, counter3); //collider tra dino e line per non farlo cadere
             dini[i].body.setBoundsRectangle(lineCollide[i]);
+            graphics.strokeLineShape(lineCollide[i]);
+            console.log("line: " + lineCollide[i].y + " " + counter3);
             counter -= 20;
             counter2 += 10;
             counter3 += 20;
@@ -433,21 +437,42 @@
 
         for(var i = 0; i<dini.length; i++){
             dini[i].play("run");
-        }
-
-
+        }  
 
         //collider cactus dino
+        var collisionGroups = new Array(NUM_DINI);
+        for(var i = 0; i<collisionGroups.length; i++){
+            collisionGroups[i] = this.physics.add.group();
+        }
+
         for (var i = 0; i < dini.length; i++) {
             for (var j = 0; j < cactus[i].length; j++) {
-                this.physics.add.overlap(dini[i], cactus[i][j], collideCactus(i), null, this);
+                collisionGroups[i].add(cactus[i][j]);
             }
+            this.physics.add.collider(dini[i], collisionGroups[i], collideCactus, null, this);
+            //this.physics.add.collider(collisionGroups[i], lineCollide[i]);
+            //this.physics.add.collider(lineCollide[i],collisionGroups[i] );
         }
+        /*
+        for (var i = 0; i < dini.length; i++) {
+            for (var j = 0; j < cactus[i].length; j++) {
+                this.physics.add.collider(dini[i], cactus[i][j], collideCactus, null, this);
+                //this.physics.add.overlap(dini[i], cactus[i][j], collideCactus(i), null, this);
+            }
+        }*/
 
         //input tasti 
         keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
 
+
+    function createTerreno(offset){
+
+    }
+
+    function createBackground(){
+
+    }
     //funzione per le posizioni dei cactus inizio gioco
     function cactusPosition() {
 
@@ -631,10 +656,11 @@
 
 
     //collisione tra dinosauri e cactus
-    function collideCactus(num) {
-        /*dini[num].setVelocityX(-150);
-        dini[num].play("death");*/
-        console.log("vedi che ho ragione 2.0")
+    //function collideCactus(num) {
+    function collideCactus(dino, cactus) {
+        dino.setVelocityX(-150);
+        dino.play("death");    
+        console.log('collision: '+dino.y+' vs '+cactus.y);
 
     }
 
