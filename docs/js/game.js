@@ -62,6 +62,7 @@ const START_DISTANCE_CACTUS = 700;
 const START_DISTANCE_DINI = 240;
 const TRANSLATION = 20;
 const ALTEZZA_CACTUS = 50;
+const ALTEZZA_DINI = 50;
 
 var terreni = new Array(NUM_TERRENI);
 
@@ -81,9 +82,7 @@ var linesGroup = [];
 var heights = new Array(NUM_DINI);
 
 var distanzaMinima = 130;
-
-//var keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-
+var colliderDini = new Array(NUM_DINI);
 
 //funzione preloadGame, carica gli assets per poi usarli nella scena gioco
 function preloadGame() {
@@ -139,11 +138,11 @@ function setCactus(gamescene){
             var distanza = Math.floor(Math.random() * 200) + 70;
             var x = 0;
             if(j== 0){
-                x = START_DISTANCE_CACTUS +(i*TRANSLATION);
+                x = START_DISTANCE_CACTUS -(i*TRANSLATION);
             }else if(i == 0){
                 x = (cactus[i][j-1]).x + distanzaMinima + distanza;
             }else{  
-                x = cactus[i-1][j].x + TRANSLATION;
+                x = cactus[i-1][j].x - TRANSLATION;
             }
             cactus[i][j] = gamescene.physics.add.image(x, START_HEIGHT+(i*HEIGHT_SPACE)-ALTEZZA_CACTUS, 'cactus').setOrigin(0, 0);
             cactus[i][j].setImmovable(true);
@@ -156,10 +155,10 @@ function setDini(gamescene){
 
     graphics = gamescene.add.graphics({ lineStyle: { width: 4, color: 0xaa00aa } });
     for(var i = 0; i< dini.length; i++){
-        dini[i] = gamescene.physics.add.sprite(START_DISTANCE_DINI-(i*TRANSLATION), START_HEIGHT-(i*HEIGHT_SPACE), 'dinoSprite').setOrigin(0, 0);
+        dini[i] = gamescene.physics.add.sprite(START_DISTANCE_DINI-(i*TRANSLATION), START_HEIGHT-(i*HEIGHT_SPACE)- ALTEZZA_DINI, 'dinoSprite').setOrigin(0, 0);
         dini[i].setTintFill(colorDini, colorDini, colorDini, colorDini);
         dini[i].setCollideWorldBounds(true); //collisioni del dino con i bordi
-        gamescene.physics.add.collider(dini[i], linesGroup.getChildren()[i]);
+        colliderDini[i] = gamescene.physics.add.collider(dini[i], linesGroup.getChildren()[i]);
         dini[i].play("run");
 
     }
@@ -199,16 +198,23 @@ function setAnimations(gamescene){
         repeat: -1
     });
 }
-function collideCactus(dino, cactus) {
-    dino.setVelocityX(-150);
-    dino.play("death");    
-    console.log('collision: '+dino.y+' vs '+cactus.y);
+function collideCactus(dino) {
+    dino.setVelocityX(-200);
+    dino.play("death");
+    for(var i = 0; i<NUM_DINI; i++){
+        if(colliderDini[i] != null || colliderDini[i] != undefined ){
+            this.physics.world.removeCollider(colliderDini[i]);
+        }
+    }
+    
+
 
 }
 function setColliderCactusDini(gamescene){
     for (var i = 0; i < cactus.length; i++) {
         for(var j = 0; j < cactus[i].length; j++) {
-            gamescene.physics.add.collider(dini[i], cactus[i][j], collideCactus, null, gamescene);
+            gamescene.physics.add.overlap(dini[i], cactus[i][j], collideCactus, null, gamescene);
+            
         }
 
         
@@ -231,17 +237,10 @@ function createGame() {
 }
 
 
-//funzione per le posizioni dei cactus inizio gioco
-
-
-//evitare doppio salto
-var touchFloor = new Array(NUM_DINI);
-for (var i = 0; i < touchFloor.length; i++) {
-    touchFloor[i] = true;
-}
 
 //variabili di supporto per velocità e assegnazione punteggio
 //velocità sfondo
+
 var velocitaSfondo = 5;
 var punteggio = new Array(NUM_DINI);
 for(var i = 0; i<punteggio.length; i++){
@@ -271,7 +270,7 @@ function updateTerreni(){
         terreni[i].x -= velocitaSfondo;
     }
 
-    //se escono completamente dal canvas vengono ridisegnati infondo
+    //se escono completamente dal canvas vengono ridisegnati in fondo
     for (var i = 0; i < terreni.length; i++) {
         if (terreni[i].x < -2000) {
             terreni[i].x = 1100;
@@ -315,7 +314,7 @@ function updateCactus(){
                     }
                     cactus[i][j].x = cactus[i][num].x + distanzaMinima + Math.floor(Math.random() * 200) + 70;
                 }else{
-                    cactus[i][j].x = cactus[i-1][j].x + 20;
+                    cactus[i][j].x = cactus[i-1][j].x - TRANSLATION  ;
                 }
                 pAssegnati[i][j] = false;
             }
@@ -345,25 +344,16 @@ function updateGame() {
     //input salto
     if (keySpace.isDown) {
         for(var i = 0; i<dini.length; i++){
-            if (touchFloor[i]) {    //TODO check if colliding with line
+            if (dini[i].body.touching.down) {    // https://phaser.io/examples/v3/view/physics/arcade/body-on-a-path
                 //salto
                 dini[i].play("jump");
                 dini[i].setVelocityY(-800);
-                touchFloor[i] = false;
+
             }
         }
         
     }
 
-    
-
-    //collisione con il suolo per evitare il doppio salto
-    for(var i = 0; i<dini.length; i++){
-        if (dini[i].y == heights[i] - dini[i].height && touchFloor[i] == false) {
-            touchFloor[i] = true;
-            dini[i].play("run");
-        }
-    }
     
     //velocità & punteggioDini  
     for(var i = 0; i<dini.length; i++){
