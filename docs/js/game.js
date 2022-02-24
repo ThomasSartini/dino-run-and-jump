@@ -77,7 +77,7 @@ for(var i = 0; i< cactus.length; i++){
     cactus[i] = new Array(NUM_CACTUS);
 }
 
-var lines;
+var linesGroup = [];
 var heights = new Array(NUM_DINI);
 
 var distanzaMinima = 130;
@@ -98,12 +98,14 @@ function preloadGame() {
 }
 
 function setColliderLines(gamescene){
-    lines = gamescene.physics.add.staticGroup();
+    linesGroup = gamescene.physics.add.staticGroup();
     for(var i = 0; i< NUM_DINI; i++){
         var height = START_HEIGHT+(i*HEIGHT_SPACE);
-        lines.add(gamescene.add.zone(0, height, innerWidth,1));
+        let line = gamescene.add.zone(0, height, innerWidth,1)
+        linesGroup.add(line);
         heights[i] = height ;
     }
+    console.log(linesGroup)
 }
 
 function setTerreni(gamescene){
@@ -157,7 +159,7 @@ function setDini(gamescene){
         dini[i] = gamescene.physics.add.sprite(START_DISTANCE_DINI-(i*TRANSLATION), START_HEIGHT-(i*HEIGHT_SPACE), 'dinoSprite').setOrigin(0, 0);
         dini[i].setTintFill(colorDini, colorDini, colorDini, colorDini);
         dini[i].setCollideWorldBounds(true); //collisioni del dino con i bordi
-        gamescene.physics.add.collider(dini[i], lines);
+        gamescene.physics.add.collider(dini[i], linesGroup.getChildren()[i]);
         dini[i].play("run");
 
     }
@@ -225,7 +227,7 @@ function createGame() {
     setAnimations(this);
     setDini(this);
     setColliderCactusDini(this);
-    
+    keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 }
 
 
@@ -334,7 +336,7 @@ function updateNuvola(){
 
 //funzione updateGame, viene richiamata 60 volte al secondo, utilizzata per i movimenti nel animazione
 function updateGame() {
-    keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    
     updateTerreni();
     updateMontagne();
     updateCactus();
@@ -343,7 +345,7 @@ function updateGame() {
     //input salto
     if (keySpace.isDown) {
         for(var i = 0; i<dini.length; i++){
-            if (touchFloor[i]) {
+            if (touchFloor[i]) {    //TODO check if colliding with line
                 //salto
                 dini[i].play("jump");
                 dini[i].setVelocityY(-800);
