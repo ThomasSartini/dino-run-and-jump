@@ -56,12 +56,19 @@ const NUM_DINI = 4;
 const NUM_TERRENI = 2;
 const NUM_MONTAGNE = 2;
 const NUM_CACTUS = 5;
+const START_HEIGHT = 410;
+const HEIGHT_SPACE = 20;
+const START_DISTANCE_CACTUS = 700;
+const START_DISTANCE_DINI = 240;
+const TRANSLATION = 20;
+const ALTEZZA_CACTUS = 50;
 
 var terreni = new Array(NUM_TERRENI);
 
 var montagne = new Array(NUM_MONTAGNE);
 
 var nuvola;
+var colorDini = "0x";
 
 var dini = new Array(NUM_DINI);
 
@@ -70,7 +77,8 @@ for(var i = 0; i< cactus.length; i++){
     cactus[i] = new Array(NUM_CACTUS);
 }
 
-var lineCollide = new Array(NUM_DINI);
+var lines;
+var heights = new Array(NUM_DINI);
 
 var distanzaMinima = 130;
 
@@ -89,93 +97,77 @@ function preloadGame() {
     });
 }
 
-function setTerreni(){
+function setColliderLines(gamescene){
+    lines = gamescene.physics.add.staticGroup();
+    for(var i = 0; i< NUM_DINI; i++){
+        var height = START_HEIGHT+(i*HEIGHT_SPACE);
+        lines.add(gamescene.add.zone(0, height, innerWidth,1));
+        heights[i] = height ;
+    }
+}
+
+function setTerreni(gamescene){
     var counter = 0;
     for(var i = 0; i< terreni.length; i++){
-        terreni[i] = this.physics.add.image(counter, 350, 'terreno').setOrigin(0, 0);
+        terreni[i] = gamescene.physics.add.image(counter, 350, 'terreno').setOrigin(0, 0);
         terreni[i].setImmovable(true); //fissa i terreni
         terreni[i].body.allowGravity = false; // toglie la gravità
         counter += 2000;
     }
 }
 
-function setMontagne(){
+function setMontagne(gamescene){
     counter = 0;
     for(var i = 0; i<montagne.length; i++){
-        montagne[i] = this.physics.add.image(counter, 275, 'montagne').setOrigin(0, 0);
+        montagne[i] = gamescene.physics.add.image(counter, 275, 'montagne').setOrigin(0, 0);
         montagne[i].setImmovable(true); //fissa le montagne
         montagne[i].body.allowGravity = false; // toglie la gravità
         counter += 2000;
     }
 }
 
-function setNuvola(){
-    nuvola = this.add.image(1200, 255, 'nuvola').setOrigin(0, 0);
+function setNuvola(gamescene){
+    nuvola = gamescene.add.image(1200, 255, 'nuvola').setOrigin(0, 0);
 }
 
-function setCactus(){
-    var counter = 700;
-    var counter2 = 390;
-    for(var i = 0; i<cactus.length; i++){
-        for(var j = 0; j<cactus[i].length; j++){
-            cactus[i][j] = this.physics.add.image(counter, counter2, 'cactus').setOrigin(0, 0);
-            console.log("cactus: " + cactus[i][j].y);
-        }
-        counter +=20;
-        counter2 -= 20;
-    }
-
-    setCactusPosition();
+function setCactus(gamescene){
 
     for(var i = 0; i<cactus.length; i++){
         for(var j = 0; j<cactus[i].length; j++){
+            var distanza = Math.floor(Math.random() * 200) + 70;
+            var x = 0;
+            if(j== 0){
+                x = START_DISTANCE_CACTUS +(i*TRANSLATION);
+            }else if(i == 0){
+                x = (cactus[i][j-1]).x + distanzaMinima + distanza;
+            }else{  
+                x = cactus[i-1][j].x + TRANSLATION;
+            }
+            cactus[i][j] = gamescene.physics.add.image(x, START_HEIGHT+(i*HEIGHT_SPACE)-ALTEZZA_CACTUS, 'cactus').setOrigin(0, 0);
             cactus[i][j].setImmovable(true);
             cactus[i][j].body.allowGravity = false;
         }
     }
 }
 
-function setCactusPosition() {
+function setDini(gamescene){
 
-    for(var i = 0; i< cactus.length; i++){
-        for(var j = 1; j< cactus[i].length; j++){
-            var distanza = Math.floor(Math.random() * 200) + 70;
-            if(i == 0){
-                cactus[i][j].x = (cactus[i][j-1]).x + distanzaMinima + distanza;
-            }else{
-                cactus[i][j].x = cactus[i-1][j].x + 20;
-            }
-            
-
-        }
-    }
-}
-
-function setDini(){
-    counter = 240;
-    counter2 = 388;
-    var counter3 = 410;
-    graphics = this.add.graphics({ lineStyle: { width: 4, color: 0xaa00aa } });
+    graphics = gamescene.add.graphics({ lineStyle: { width: 4, color: 0xaa00aa } });
     for(var i = 0; i< dini.length; i++){
-        dini[i] = this.physics.add.sprite(counter, counter2, 'dinoSprite').setOrigin(0, 0);
-        dini[i].setTintFill(realNumberDino4, realNumberDino4, realNumberDino4, realNumberDino4);
+        dini[i] = gamescene.physics.add.sprite(START_DISTANCE_DINI-(i*TRANSLATION), START_HEIGHT-(i*HEIGHT_SPACE), 'dinoSprite').setOrigin(0, 0);
+        dini[i].setTintFill(colorDini, colorDini, colorDini, colorDini);
         dini[i].setCollideWorldBounds(true); //collisioni del dino con i bordi
-        lineCollide[i] = new Phaser.Geom.Line(0, counter3,  window.innerWidth, counter3); //collider tra dino e line per non farlo cadere
-        dini[i].body.setBoundsRectangle(lineCollide[i]);
-        graphics.strokeLineShape(lineCollide[i]);
-        console.log("line: " + lineCollide[i].y + " " + counter3);
+        gamescene.physics.add.collider(dini[i], lines);
         dini[i].play("run");
-        counter -= 20;
-        counter2 += 10;
-        counter3 += 20;
+
     }
 }
 
-function setAnimations(){
+function setAnimations(gamescene){
     //animazione di corsa
-    this.anims.create({
+    gamescene.anims.create({
         key: 'run',
-        frames: this.anims.generateFrameNumbers('dinoSprite', {
+        frames: gamescene.anims.generateFrameNumbers('dinoSprite', {
             start: 0,
             end: 1
         }),
@@ -184,9 +176,9 @@ function setAnimations(){
     });
 
     //animazione di salto
-    this.anims.create({
+    gamescene.anims.create({
         key: 'jump',
-        frames: this.anims.generateFrameNumbers('dinoSprite', {
+        frames: gamescene.anims.generateFrameNumbers('dinoSprite', {
             start: 2,
             end: 2
         }),
@@ -195,9 +187,9 @@ function setAnimations(){
     });
 
     //animazione di morte
-    this.anims.create({
+    gamescene.anims.create({
         key: 'death',
-        frames: this.anims.generateFrameNumbers('dinoSprite', {
+        frames: gamescene.anims.generateFrameNumbers('dinoSprite', {
             start: 3,
             end: 3
         }),
@@ -211,38 +203,28 @@ function collideCactus(dino, cactus) {
     console.log('collision: '+dino.y+' vs '+cactus.y);
 
 }
-function setColliderCactusDini(){
-    var collisionGroups = new Array(NUM_DINI);
-    for(var i = 0; i<collisionGroups.length; i++){
-        collisionGroups[i] = this.physics.add.group();
-    }
+function setColliderCactusDini(gamescene){
+    for (var i = 0; i < cactus.length; i++) {
+        for(var j = 0; j < cactus[i].length; j++) {
+            gamescene.physics.add.collider(dini[i], cactus[i][j], collideCactus, null, gamescene);
+        }
 
-    for (var i = 0; i < dini.length; i++) {
-        for (var j = 0; j < cactus[i].length; j++) {
-            collisionGroups[i].add(cactus[i][j]);
-        }
-        this.physics.add.collider(dini[i], collisionGroups[i], collideCactus, null, this);
-        //this.physics.add.collider(collisionGroups[i], lineCollide[i]);
-        //this.physics.add.collider(lineCollide[i],collisionGroups[i] );
+        
     }
-    /*
-    for (var i = 0; i < dini.length; i++) {
-        for (var j = 0; j < cactus[i].length; j++) {
-            this.physics.add.collider(dini[i], cactus[i][j], collideCactus, null, this);
-            //this.physics.add.overlap(dini[i], cactus[i][j], collideCactus(i), null, this);
-        }
-    }*/
 }
 
+
+var keySpace;
 //funzione createGame, crea nel canvas tutti i vari assets caricati nella funzione preload game
 function createGame() { 
-    setTerreni();
-    setMontagne();
-    setNuvola()
-    setCactus();
-    setAnimations();
-    setDini();
-    setColliderCactusDini();
+    setColliderLines(this);
+    setTerreni(this);
+    setMontagne(this);
+    setNuvola(this)
+    setCactus(this);
+    setAnimations(this);
+    setDini(this);
+    setColliderCactusDini(this);
     
 }
 
@@ -352,10 +334,10 @@ function updateNuvola(){
 
 //funzione updateGame, viene richiamata 60 volte al secondo, utilizzata per i movimenti nel animazione
 function updateGame() {
-    
+    keySpace = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     updateTerreni();
     updateMontagne();
-    UpdateCactus();
+    updateCactus();
     updateNuvola();
    
     //input salto
@@ -375,7 +357,7 @@ function updateGame() {
 
     //collisione con il suolo per evitare il doppio salto
     for(var i = 0; i<dini.length; i++){
-        if (dini[i].y == lineCollide[i].y1 - dini[i].height && touchFloor[i] == false) {
+        if (dini[i].y == heights[i] - dini[i].height && touchFloor[i] == false) {
             touchFloor[i] = true;
             dini[i].play("run");
         }
