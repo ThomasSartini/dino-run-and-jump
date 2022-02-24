@@ -34,7 +34,7 @@ function setSettingsPhaser(){
                 gravity: {
                     y: 3000
                 },
-                debug: true
+                debug: false
             }
         },
 
@@ -52,12 +52,12 @@ function setSettingsPhaser(){
 
 //dichiarazione costanti ecc
 
-const NUM_DINI = 4;
+const NUM_DINI = 10;
 const NUM_TERRENI = 2;
 const NUM_MONTAGNE = 2;
 const NUM_CACTUS = 5;
 const START_HEIGHT = 410;
-const HEIGHT_SPACE = 20;
+const HEIGHT_SPACE = 25;
 const START_DISTANCE_CACTUS = 700;
 const START_DISTANCE_DINI = 240;
 const TRANSLATION = 20;
@@ -81,7 +81,7 @@ for(var i = 0; i< cactus.length; i++){
 var linesGroup = [];
 var heights = new Array(NUM_DINI);
 
-var distanzaMinima = 130;
+var distanzaMinima = 180;
 var colliderDini = new Array(NUM_DINI);
 
 //funzione preloadGame, carica gli assets per poi usarli nella scena gioco
@@ -391,7 +391,7 @@ function updateGame() {
     }
 
     if (check) {
-        //endOfTheGame(this);
+        endOfTheGame(this);
     }
 
 
